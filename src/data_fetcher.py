@@ -17,3 +17,11 @@ class DataFetcher:
         df = yf.download(ticker, start=start, end=end, progress=False)
         df.to_parquet(cache_file)
         return df
+
+    @staticmethod
+    def get_multiple_stocks(tickers, start="2015-01-01"):
+        df_list = []
+        for t in tickers:
+            df = DataFetcher.get_stock_data(t, start)
+            df_list.append(df['Adj Close'].rename(t))
+        return pd.concat(df_list, axis=1)

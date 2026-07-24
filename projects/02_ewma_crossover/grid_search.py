@@ -1,4 +1,3 @@
-
 """
 Grid Search สำหรับ EWMA Crossover
 ใช้ในการหาค่า fast_span และ slow_span ที่ให้ผลลัพธ์ดีที่สุด
@@ -10,15 +9,12 @@ from tqdm import tqdm
 from src.data_fetcher import DataFetcher
 from strategy import generate_signals, backtest
 
-def run_grid_search(ticker='AAPL', start='2020-01-01', 
-                    fast_range=range(2, 22, 2), 
+def run_grid_search(ticker='AAPL', start='2020-01-01',
+                    fast_range=range(2, 22, 2),
                     slow_range=range(20, 61, 5)):
-    """
-    ทดสอบทุกคู่ของ Fast Span และ Slow Span
-    """
+    """ทดสอบทุกคู่ของ Fast Span และ Slow Span"""
     df_raw = DataFetcher.get_stock_data(ticker, start=start)
     results = []
-    
     for fast in tqdm(fast_range, desc="Fast Span"):
         for slow in tqdm(slow_range, desc="Slow Span", leave=False):
             if fast >= slow:
@@ -37,7 +33,6 @@ def run_grid_search(ticker='AAPL', start='2020-01-01',
                 })
             except Exception as e:
                 continue
-    
     df_results = pd.DataFrame(results)
     return df_results
 
