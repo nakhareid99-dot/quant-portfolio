@@ -1,24 +1,17 @@
 """
 EWMA Crossover Strategy
-ใช้ EWMA (Exponentially Weighted Moving Average) 2 เส้น
-- Fast EWMA: ตอบสนองไว (period สั้น)
-- Slow EWMA: ตอบสนองช้า (period ยาว)
-Signal: ซื้อเมื่อ Fast > Slow, ขายเมื่อ Fast < Slow
 """
 import pandas as pd
 import numpy as np
 
 def calculate_ewma(df: pd.DataFrame, column: str = 'Close', span: int = 20) -> pd.Series:
-    """คำนวณ EWMA (Exponentially Weighted Moving Average)"""
     return df[column].ewm(span=span, adjust=False).mean()
 
 def calculate_ewma_volatility(returns: pd.Series, lambda_: float = 0.94) -> pd.Series:
-    """คำนวณ Volatility แบบ EWMA (RiskMetrics 1996)"""
     variance = returns.ewm(alpha=(1 - lambda_), adjust=False).var()
     return np.sqrt(variance)
 
 def generate_signals(df: pd.DataFrame, fast_span: int = 10, slow_span: int = 30) -> pd.DataFrame:
-    """สร้าง Signal จาก EWMA Crossover"""
     df = df.copy()
     df['EWMA_fast'] = calculate_ewma(df, span=fast_span)
     df['EWMA_slow'] = calculate_ewma(df, span=slow_span)
@@ -32,7 +25,6 @@ def generate_signals(df: pd.DataFrame, fast_span: int = 10, slow_span: int = 30)
     return df
 
 def backtest(df: pd.DataFrame, initial_capital: float = 100000, transaction_cost: float = 0.001) -> dict:
-    """ทำ Backtest และคำนวณ Performance Metrics"""
     df = df.copy()
     df['Cumulative_Strategy'] = (1 + df['Strategy_Return']).cumprod() * initial_capital
     df['Cumulative_BuyHold'] = (1 + df['Returns']).cumprod() * initial_capital

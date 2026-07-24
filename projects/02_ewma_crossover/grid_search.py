@@ -1,6 +1,5 @@
 """
 Grid Search สำหรับ EWMA Crossover
-ใช้ในการหาค่า fast_span และ slow_span ที่ให้ผลลัพธ์ดีที่สุด
 """
 import sys
 import numpy as np
@@ -12,7 +11,6 @@ from strategy import generate_signals, backtest
 def run_grid_search(ticker='AAPL', start='2020-01-01',
                     fast_range=range(2, 22, 2),
                     slow_range=range(20, 61, 5)):
-    """ทดสอบทุกคู่ของ Fast Span และ Slow Span"""
     df_raw = DataFetcher.get_stock_data(ticker, start=start)
     results = []
     for fast in tqdm(fast_range, desc="Fast Span"):

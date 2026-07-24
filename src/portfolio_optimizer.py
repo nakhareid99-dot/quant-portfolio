@@ -1,26 +1,22 @@
 """
 src/portfolio_optimizer.py
 โมดูลสำหรับคำนวณ Efficient Frontier และหา Optimal Portfolio
-ใช้ Modern Portfolio Theory (Markowitz)
 """
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
 
 def portfolio_stats(weights, mean_returns, cov_matrix):
-    """คำนวณผลตอบแทน, ความเสี่ยง, และ Sharpe Ratio ของพอร์ต"""
     returns = np.sum(mean_returns * weights) * 252
     std = np.sqrt(np.dot(weights.T, np.dot(cov_matrix * 252, weights)))
     return returns, std
 
 def negative_sharpe(weights, mean_returns, cov_matrix, risk_free_rate=0.02):
-    """ฟังก์ชันสำหรับ Minimize (ใช้ Sharpe เป็นลบ)"""
     returns, std = portfolio_stats(weights, mean_returns, cov_matrix)
     sharpe = (returns - risk_free_rate) / std if std != 0 else 0
     return -sharpe
 
 def optimize_portfolio(mean_returns, cov_matrix, risk_free_rate=0.02):
-    """หาพอร์ตที่ให้ Sharpe Ratio สูงสุด (Max Sharpe)"""
     num_assets = len(mean_returns)
     args = (mean_returns, cov_matrix, risk_free_rate)
     constraints = ({'type': 'eq', 'fun': lambda x: np.sum(x) - 1})
@@ -30,7 +26,6 @@ def optimize_portfolio(mean_returns, cov_matrix, risk_free_rate=0.02):
     return result.x
 
 def random_portfolios(mean_returns, cov_matrix, num_portfolios=5000, risk_free_rate=0.02):
-    """สร้างพอร์ตจำลองแบบสุ่มเพื่อใช้พล็อต Efficient Frontier"""
     results = []
     num_assets = len(mean_returns)
     for _ in range(num_portfolios):
@@ -43,7 +38,6 @@ def random_portfolios(mean_returns, cov_matrix, num_portfolios=5000, risk_free_r
     return pd.DataFrame(results, columns=columns)
 
 def get_min_variance_portfolio(mean_returns, cov_matrix):
-    """หาพอร์ตที่ Volatility ต่ำที่สุด (Min Variance)"""
     num_assets = len(mean_returns)
     constraints = ({'type': 'eq', 'fun': lambda x: np.sum(x) - 1})
     bounds = tuple((0, 1) for _ in range(num_assets))

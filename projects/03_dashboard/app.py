@@ -49,7 +49,6 @@ with st.spinner("📥 กำลังดึงข้อมูลและคำ�
         opt_sharpe = (opt_return - risk_free) / opt_vol if opt_vol != 0 else 0
         min_var_weights = get_min_variance_portfolio(mean_returns, cov_matrix)
         min_return, min_vol = portfolio_stats(min_var_weights, mean_returns, cov_matrix)
-        last_prices = df_prices.iloc[-1]
     except Exception as e:
         st.error(f"เกิดข้อผิดพลาด: {e}")
         st.stop()
